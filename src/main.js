@@ -5,16 +5,16 @@ import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Aura from '@primevue/themes/aura';
-//import 'primevue/resources/themes/lara-light-blue/theme.css'
-//import 'primevue/resources/primevue.min.css'
-//import 'primeicons/primeicons.css'
 
 import App from './App.vue'
 
 const app = createApp(App)
 app.use(PrimeVue, {
     theme: {
-        preset: Aura
+        preset: Aura,
+        options: {
+            darkModeSelector: false
+        }
     }
 });
 app.component('DataTable', DataTable)
