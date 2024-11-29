@@ -1,40 +1,37 @@
-// useLocalStorage.js
-import { ref, watch } from 'vue'
-
-export function useLocalStorage(key, defaultValue = []) {
-    const data = ref(defaultValue)
-
-    // Lade initial gespeicherte Daten
-    const loadData = () => {
-        try {
-            const saved = localStorage.getItem(key)
-            if (saved) {
-                data.value = JSON.parse(saved)
-            }
-        } catch (err) {
-            console.error('Fehler beim Laden der Daten:', err)
-            data.value = defaultValue
+const loadEntries = () => {
+    try {
+        const saved = localStorage.getItem('gridEntries')
+        if (saved) {
+            entries.value = JSON.parse(saved)
+            entries.value.forEach(entry => {
+                if (!entry.attributes) entry.attributes = []
+            })
         }
-    }
-
-    // Speichere Daten bei Änderungen
-    const saveData = () => {
-        try {
-            localStorage.setItem(key, JSON.stringify(data.value))
-        } catch (err) {
-            console.error('Fehler beim Speichern der Daten:', err)
-        }
-    }
-
-    // Automatisches Speichern bei Änderungen
-    watch(data, saveData, { deep: true })
-
-    // Initial laden
-    loadData()
-
-    return {
-        data,
-        saveData,
-        loadData
+    } catch (err) {
+        console.error('Fehler beim Laden:', err)
+        entries.value = []
     }
 }
+export { loadEntries }
+
+const saveEntries = () => {
+    try {
+        localStorage.setItem('gridEntries', JSON.stringify(entries.value))
+    } catch (err) {
+        console.error('Fehler beim Speichern:', err)
+    }
+}
+export { saveEntries }
+
+const updateLastUpdateTime = () => {
+    lastUpdateTime.value = new Date().toLocaleString()
+}
+export { updateLastUpdateTime }
+
+const clearEntries = () => {
+    if (entries.value.length > 0 && confirm('Möchten Sie wirklich alle Einträge löschen?')) {
+        entries.value = []
+        updateLastUpdateTime()
+    }
+}
+export { clearEntries }
